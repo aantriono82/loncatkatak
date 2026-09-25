@@ -136,11 +136,12 @@ button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--stage-gap);
-  align-items: start;
+  align-items: stretch;
   flex: 1 1 auto;
 }
 
 .game-board {
+  width: 100%;
   min-width: 0;
   overflow: hidden;
   border-radius: clamp(7px, .55vw, 13px);
@@ -148,6 +149,8 @@ button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke
   box-shadow: 0 8px 26px #10250040;
   background: var(--deep);
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
 }
 
 .hud {
@@ -1090,10 +1093,11 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
   .split-stage {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     flex: 1 1 auto;
     min-height: 0;
     max-width: 900px;
-    margin: auto;
+    margin: 0 auto;
     width: 100%;
   }
   .game-board {
@@ -1101,6 +1105,7 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
+    width: 100%;
     height: 100%;
   }
   .pond {
@@ -1227,6 +1232,7 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
     min-height: 0;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     max-width: 100%;
     margin: 0 auto;
     width: 100%;
@@ -1237,6 +1243,7 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
     display: flex;
     flex-direction: column;
     border-radius: 10px;
+    width: 100%;
     height: 100%;
   }
 
