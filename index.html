@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#72a50f">
+  <meta name="description" content="Lompat Katak: kuis matematika SMP untuk satu pemain.">
+  <title>Lompat Katak — Bangun Ruang Sisi Datar</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2372a50f'/%3E%3Cpath d='M16 5a11 11 0 1 0 11 11H16Z' fill='%23d5fa91'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <!-- PENTING: setiap edit file .js atau .css di bawah, naikkan angka ?v= supaya browser tidak memakai cache lama -->
+  <link rel="stylesheet" href="styles.css?v=10">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="./" aria-label="Lompat Katak, halaman awal"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" role="presentation"><path d="M27.6 4.4C17.3 4.8 8.8 7.4 5.1 13.8c-3.4 5.9.7 12.8 7.3 13.7 6.5.9 12.5-3.3 14.4-10.2.8-3 .8-7.2.8-12.9Z" fill="currentColor"></path><path d="M7.3 25.9C11 19.8 16.1 14.5 25.9 6.4" stroke="#78ac13" stroke-width="2" stroke-linecap="round"></path></svg></span> atiga<span>play</span></a>
+      <span class="site-context">MATEMATIKA <span>·</span> KELAS IX SMP</span>
+      <div class="header-user-box" id="header-user-box" title="Nama Pengguna">
+        <span class="header-user-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12Zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8Z"/>
+          </svg>
+        </span>
+        <input type="text" id="header-player-input" class="header-player-input" placeholder="Nama Pemain" maxlength="20" spellcheck="false" autocomplete="name" aria-label="Nama Pemain" title="Ketik untuk mengubah nama pengguna">
+      </div>
+      <div class="header-actions">
+        <button class="help-link" id="help-button" type="button"><span aria-hidden="true">?</span> Cara bermain</button>
+        <button class="header-icon-button" id="fullscreen-button" type="button" aria-label="Layar penuh" title="Layar penuh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="split-stage" id="split-stage" aria-label="Papan permainan Lompat Katak"></section>
+    <footer class="game-footer">
+      <span class="footer-credit">Made with <span class="heart-sway" aria-label="love" role="img"><svg class="heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ff3344"/></svg></span> by <a href="https://www.aantriono.com/" target="_blank" rel="noopener noreferrer" class="credit-author">Aan Triono</a></span>
+    </footer>
+    <p class="accessibility-status" id="accessibility-status" role="status" aria-live="polite"></p>
+  </main>
+
+  <template id="board-template">
+    <article class="game-board" tabindex="0" aria-label="Papan permainan">
+      <header class="hud">
+        <div class="hud-stat life-stat" aria-label="Nyawa tersisa"><span class="stat-label">NYAWA</span><span class="stat-value"><span class="heart" aria-hidden="true">♡</span> <b class="lives-value">5</b></span></div>
+        <h1>Bangun Ruang Sisi Datar<span class="heading-suffix">: Kubus, Balok, Prisma &amp; Limas</span></h1>
+        <div class="hud-stat score-stat"><span class="stat-label">SKOR</span><span class="stat-value"><span class="score-icon" aria-hidden="true">✦</span> <b class="score-value">0</b></span></div>
+      </header>
+
+      <div class="pond">
+        <div class="pond-current" aria-hidden="true"></div>
+        <div class="pond-shockwave" aria-hidden="true"></div>
+        <div class="pond-flash" aria-hidden="true"></div>
+        <div class="water-overlay" aria-hidden="true"></div>
+        <img class="decor-pad decor-1" src="assets/lily.png" alt="" draggable="false">
+        <img class="decor-pad decor-2" src="assets/lily.png" alt="" draggable="false">
+        <img class="decor-pad decor-3" src="assets/lily.png" alt="" draggable="false">
+        <img class="decor-pad decor-4" src="assets/lily.png" alt="" draggable="false">
+        <img class="decor-pad decor-center" src="assets/lily.png" alt="" draggable="false">
+
+        <div class="question-box" hidden>
+          <span class="question-counter">Soal 1 / 10</span>
+          <div class="question-content">
+            <div class="question-illustration" hidden aria-hidden="true"></div>
+            <div class="question-body">
+              <h2></h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="answer-field" hidden>
+          <button class="answer-pad pad-a" type="button" data-answer="0"><img src="assets/lily.png" alt="" draggable="false"><span class="answer-letter">A</span><span class="answer-text"></span><span class="answer-symbol" aria-hidden="true"></span></button>
+          <button class="answer-pad pad-b" type="button" data-answer="1"><img src="assets/lily.png" alt="" draggable="false"><span class="answer-letter">B</span><span class="answer-text"></span><span class="answer-symbol" aria-hidden="true"></span></button>
+          <button class="answer-pad pad-c" type="button" data-answer="2"><img src="assets/lily.png" alt="" draggable="false"><span class="answer-letter">C</span><span class="answer-text"></span><span class="answer-symbol" aria-hidden="true"></span></button>
+          <button class="answer-pad pad-d" type="button" data-answer="3"><img src="assets/lily.png" alt="" draggable="false"><span class="answer-letter">D</span><span class="answer-text"></span><span class="answer-symbol" aria-hidden="true"></span></button>
+          <img class="home-pad" src="assets/lily.png" alt="" draggable="false">
+          <div class="frog">
+            <img class="frog-player-img" src="assets/frogi.png" alt="Katak pemain tampak dari belakang" draggable="false">
+          </div>
+        </div>
+
+        <div class="feedback" role="status" aria-live="polite"></div>
+        <div class="game-controls">
+          <div class="time-group" hidden>
+            <div class="countdown" aria-label="Waktu menjawab">
+              <svg viewBox="0 0 80 80" aria-hidden="true"><circle class="timer-track" cx="40" cy="40" r="34"/><circle class="timer-progress" cx="40" cy="40" r="34"/></svg>
+              <span class="seconds-value">60</span>
+            </div>
+            <span class="elapsed" aria-label="Lama bermain">00:00</span>
+          </div>
+          <button class="icon-button settings-button" type="button" aria-label="Pengaturan dan jeda" title="Pengaturan dan jeda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M12 3v18M18 3v18M3 8h6M9 16h6M15 7h6"/></svg></button>
+        </div>
+
+        <div class="start-countdown" hidden aria-live="assertive" aria-atomic="true">
+          <div class="countdown-backdrop" aria-hidden="true"></div>
+          <div class="countdown-burst" aria-hidden="true"></div>
+          <div class="countdown-ripple" aria-hidden="true"></div>
+          <div class="countdown-stage">
+            <img class="countdown-img" src="assets/count-3.png" alt="3" draggable="false">
+          </div>
+        </div>
+
+        <section class="start-screen" aria-label="Mulai permainan">
+          <div class="start-mascot"><img class="start-leaf" src="assets/lily.png" alt=""><img class="start-frog" src="assets/frog.png" alt="Katak Frogi siap melompat"></div>
+          <p class="eyebrow">LOMPAT KATAK</p>
+          <div class="shape-picker" role="group" aria-label="Pilih bangun ruang">
+            <button class="shape-option active" type="button" data-shape="semua" aria-pressed="true">
+              <span class="shape-icon" aria-hidden="true"></span>
+              <span class="shape-label">Semua</span>
+            </button>
+            <button class="shape-option" type="button" data-shape="kubus" aria-pressed="false">
+              <span class="shape-icon" aria-hidden="true"></span>
+              <span class="shape-label">Kubus</span>
+            </button>
+            <button class="shape-option" type="button" data-shape="balok" aria-pressed="false">
+              <span class="shape-icon" aria-hidden="true"></span>
+              <span class="shape-label">Balok</span>
+            </button>
+            <button class="shape-option" type="button" data-shape="prisma" aria-pressed="false">
+              <span class="shape-icon" aria-hidden="true"></span>
+              <span class="shape-label">Prisma</span>
+            </button>
+            <button class="shape-option" type="button" data-shape="limas" aria-pressed="false">
+              <span class="shape-icon" aria-hidden="true"></span>
+              <span class="shape-label">Limas</span>
+            </button>
+          </div>
+          <div class="level-picker" role="group" aria-label="Pilih tingkat kesulitan">
+            <button class="level-option active" type="button" data-level="mudah" aria-pressed="true"><strong>Mudah</strong><small>Konsep dasar (60s)</small></button>
+            <button class="level-option" type="button" data-level="sedang" aria-pressed="false"><strong>Sedang</strong><small>Hitungan bertahap (90s)</small></button>
+            <button class="level-option" type="button" data-level="sulit" aria-pressed="false"><strong>Sulit</strong><small>Analisis (120s)</small></button>
+          </div>
+          <div class="player-name-card">
+            <label class="player-name-label">
+              <span class="player-name-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12Zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8Z"/>
+                </svg>
+              </span>
+              <span>Nama Pengguna:</span>
+            </label>
+            <div class="player-name-input-wrapper">
+              <input type="text" class="player-name-input start-player-input" placeholder="Masukkan nama kamu..." maxlength="20" spellcheck="false" autocomplete="name" aria-label="Nama Pengguna">
+            </div>
+          </div>
+          <button class="primary-button start-button" type="button"><span aria-hidden="true">▶</span> Mulai Bermain</button>
+          <p class="start-details"><span class="selected-level-label">Mudah</span> <span>·</span> <span class="selected-question-count">10</span> soal <span>·</span> 5 nyawa <span>·</span> <span class="selected-level-time">60</span> detik / soal</p>
+        </section>
+
+        <section class="result-screen" aria-label="Hasil permainan" hidden>
+          <div class="confetti" aria-hidden="true"></div>
+          <h2 tabindex="-1">KAMU MENANG!</h2>
+          <p class="result-player"><span class="result-player-badge">👤 <b class="result-player-name">Pemain</b></span></p>
+          <p class="result-message">Hebat! Kamu berhasil menang.</p>
+          <span class="trophy" aria-hidden="true">🏆</span>
+          <div class="result-stats"><div><span>SKOR</span><b class="result-score">100</b><small class="result-score-detail" hidden></small></div><div><span>BENAR</span><b class="result-correct">10 / 10</b></div><div><span>WAKTU</span><b class="result-time">01:00</b></div></div>
+          <div class="result-actions"><button class="primary-button retry-button" type="button"><span aria-hidden="true">↻</span> Main lagi</button><button class="secondary-button report-button" type="button">Lihat pembahasan</button></div>
+        </section>
+      </div>
+    </article>
+  </template>
+
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <div class="dialog-heading"><h2 id="settings-title">Pengaturan</h2><button class="close-button" id="close-settings" type="button" aria-label="Tutup pengaturan">×</button></div>
+    <p class="dialog-note" id="pause-note">Atur suara permainan.</p>
+    <label class="sound-row" for="sound-toggle"><span>Efek suara</span><input type="checkbox" id="sound-toggle" checked><span class="switch" aria-hidden="true"></span></label>
+    <button class="primary-button" id="continue-button" type="button">Kembali ke permainan</button>
+    <button class="text-button" id="quit-button" type="button" hidden>Akhiri permainan</button>
+  </dialog>
+
+  <dialog id="help-dialog" aria-labelledby="help-title">
+    <div class="dialog-heading"><h2 id="help-title">Cara bermain</h2><button class="close-button" id="close-help" type="button" aria-label="Tutup petunjuk">×</button></div>
+    <ol class="instructions"><li>Pilih bangun ruang dan tingkat kesulitan sebelum mulai bermain.</li><li>Baca soal di atas kolam, lalu pilih daun dengan jawaban yang benar.</li><li>Jawaban benar mendapat skor proporsional (skala 100). Sisa nyawa dan waktu tercepat memberikan poin bonus jika berhasil menyeberang.</li><li>Jawaban salah atau waktu habis mengurangi <b>1 nyawa</b>.</li><li>Kriteria menang: capai <b>batas tuntas (KKM minimal 60% benar)</b> dan tidak kehabisan nyawa.</li><li>Setelah selesai, lihat pembahasan lengkap untuk setiap soal.</li></ol>
+    <p class="dialog-note">Pengaturan atau petunjuk akan menjeda permainan yang sedang berjalan. Permainan juga dijeda saat tab tidak aktif.</p>
+    <button class="primary-button" id="help-done" type="button">Mengerti</button>
+  </dialog>
+
+  <dialog id="report-dialog" class="report-dialog" aria-labelledby="report-title"><div class="dialog-heading"><h2 id="report-title">Pembahasan jawaban</h2><button class="close-button" id="close-report" type="button" aria-label="Tutup pembahasan">×</button></div><div id="report-content"></div></dialog>
+
+  <script src="vendor/katex/katex.min.js"></script>
+  <script src="vendor/katex/contrib/auto-render.min.js"></script>
+  <script src="illustrations.js?v=3"></script>
+  <script src="questions.js?v=4"></script>
+  <script src="engine.js?v=4"></script>
+  <script src="game.js?v=7"></script>
+</body>
+</html>
