@@ -331,7 +331,9 @@
         reportButton: root.querySelector('.report-button'),
         confetti: root.querySelector('.confetti'),
         startPlayerInput: root.querySelector('.start-player-input'),
-        resultPlayerName: root.querySelector('.result-player-name')
+        resultPlayerName: root.querySelector('.result-player-name'),
+        homeButton: root.querySelector('.home-button'),
+        resultHomeButton: root.querySelector('.result-home-button')
       };
 
       const requiredKeys = [
@@ -387,6 +389,12 @@
       this.el.levelButtons.forEach(button => button.addEventListener('click', () => this.selectLevel(button.dataset.level)));
       this.el.startButton.addEventListener('click', () => this.startGame(this.selectedLevel));
       this.el.retryButton.addEventListener('click', () => this.startGame(this.selectedLevel));
+      if (this.el.homeButton) {
+        this.el.homeButton.addEventListener('click', () => this.goHome());
+      }
+      if (this.el.resultHomeButton) {
+        this.el.resultHomeButton.addEventListener('click', () => this.goHome());
+      }
       this.el.buttons.forEach((button, index) => button.addEventListener('click', () => {
         focusedBoard = this;
         initAudio();
@@ -507,7 +515,8 @@
         button.disabled = false;
         const text = button.querySelector('.answer-text');
         formatMath(text, question.options[index]);
-        text.classList.toggle('long-answer', question.options[index].length > 15);
+        const opt = question.options[index] || '';
+        text.classList.toggle('long-answer', opt.length > 12 || opt.includes('\\text') || opt.includes('\\frac') || opt.includes('^'));
         button.querySelector('.answer-symbol').textContent = '';
         button.setAttribute('aria-label', labels[index] + '. ' + cleanLatexForSpeech(question.options[index]));
       });
@@ -517,6 +526,40 @@
       this.hud();
       this.clock();
       announce(this.label + ': soal ' + (this.round.index + 1) + '. ' + cleanLatexForSpeech(question.text) + ' A: ' + cleanLatexForSpeech(question.options[0]) + '. B: ' + cleanLatexForSpeech(question.options[1]) + '. C: ' + cleanLatexForSpeech(question.options[2]) + '. D: ' + cleanLatexForSpeech(question.options[3]));
+    }
+
+    goHome() {
+      this.session += 1;
+      this.paused = false;
+      this.isAnswering = false;
+      this.round = null;
+      this.elapsedMs = 0;
+      this.remainingMs = 0;
+      this.clearFrog();
+      if (this.el.startCountdown) {
+        this.el.startCountdown.classList.remove('active', 'fade-out');
+        this.el.startCountdown.hidden = true;
+      }
+      this.el.answerField.hidden = true;
+      this.el.questionBox.hidden = true;
+      this.el.timeGroup.hidden = true;
+      if (this.el.homeButton) this.el.homeButton.hidden = true;
+      this.el.settingsButton.hidden = false;
+      this.el.resultScreen.hidden = true;
+      if (this.el.resultScoreDetail) this.el.resultScoreDetail.hidden = true;
+      this.el.confetti?.replaceChildren();
+      this.el.feedback.className = 'feedback';
+      this.el.feedback.textContent = '';
+      this.el.startScreen.hidden = false;
+      if (this.el.headingSuffix) {
+        this.el.headingSuffix.textContent = ': Kubus, Balok, Prisma & Limas';
+      }
+      if (this.el.startPlayerInput) {
+        this.el.startPlayerInput.value = this.playerName || getStoredPlayerName();
+      }
+      this.hud();
+      ensureLoop();
+      announce(this.label + ': kembali ke menu utama.');
     }
 
     startGame(level = this.selectedLevel) {
@@ -559,6 +602,7 @@
         button.querySelector('.answer-symbol').textContent = '';
       });
       this.el.timeGroup.hidden = true;
+      if (this.el.homeButton) this.el.homeButton.hidden = false;
       this.el.settingsButton.hidden = false;
       this.el.confetti?.replaceChildren();
       this.clearFrog();
@@ -885,6 +929,7 @@
       this.el.answerField.hidden = true;
       this.el.questionBox.hidden = true;
       this.el.timeGroup.hidden = true;
+      if (this.el.homeButton) this.el.homeButton.hidden = true;
       this.el.settingsButton.hidden = true;
       this.el.feedback.className = 'feedback';
       this.el.resultScreen.hidden = false;
@@ -1066,6 +1111,36 @@
     sound = event.target.checked;
     if (sound) initAudio();
   });
+  const headerHomeBtn = document.querySelector('#header-home-button');
+  if (headerHomeBtn) {
+    headerHomeBtn.addEventListener('click', () => {
+      closeDialog(settingsDialog);
+      closeDialog(reportDialog);
+      closeDialog(helpDialog);
+      boards.forEach(b => b.goHome());
+    });
+  }
+
+  const brandLink = document.querySelector('.brand');
+  if (brandLink) {
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeDialog(settingsDialog);
+      closeDialog(reportDialog);
+      closeDialog(helpDialog);
+      boards.forEach(b => b.goHome());
+    });
+  }
+
+  const settingsHomeBtn = document.querySelector('#settings-home-button');
+  if (settingsHomeBtn) {
+    settingsHomeBtn.addEventListener('click', () => {
+      closeDialog(settingsDialog);
+      if (dialogBoard) dialogBoard.goHome();
+      else boards.forEach(b => b.goHome());
+    });
+  }
+
   document.querySelector('#quit-button').addEventListener('click', () => {
     const board = dialogBoard;
     if (!board) return;
