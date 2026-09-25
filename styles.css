@@ -10,12 +10,17 @@
 
 * { box-sizing: border-box; }
 
-html { min-width: 320px; background: #172800; }
+html {
+  min-width: 320px;
+  background: #172800;
+  height: 100%;
+}
 
 body {
   margin: 0;
   min-width: 320px;
-  background: #f5f8ee;
+  height: 100%;
+  background: #172800;
   color: var(--ink);
   font-family: "Trebuchet MS", Arial, sans-serif;
   font-size: 16px;
@@ -115,9 +120,13 @@ button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke
 .header-icon-button:hover { background: #3f7109; }
 
 .page {
+  min-height: calc(100vh - clamp(62px, 4.3vw, 86px));
   min-height: calc(100dvh - clamp(62px, 4.3vw, 86px));
   padding: clamp(12px, 1.8vw, 36px) clamp(10px, 2vw, 48px) 20px;
   background: #172800;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .split-stage {
@@ -128,6 +137,7 @@ button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke
   grid-template-columns: minmax(0, 1fr);
   gap: var(--stage-gap);
   align-items: start;
+  flex: 1 1 auto;
 }
 
 .game-board {
@@ -798,7 +808,7 @@ button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke
 .confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
 .confetti i { position: absolute; left: var(--x); top: -30px; width: 9px; height: 18px; background: var(--c); animation: confetti var(--d) var(--delay) ease-in infinite; rotate: var(--r); border-radius: 2px; }
 
-.game-footer { width: 100%; max-width: 3840px; margin: 0 auto; padding: 14px 5px; display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: #d9e9bf; text-align: center; }
+.game-footer { width: 100%; max-width: 3840px; margin: auto auto 0; padding: 14px 5px; display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: #d9e9bf; text-align: center; }
 .footer-credit {
   display: inline-flex;
   align-items: center;
@@ -1066,10 +1076,45 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
 }
 
 @media (max-width: 980px) {
-  .page { padding: 14px 12px 18px; background: #172800; }
-  .split-stage { grid-template-columns: 1fr; max-width: 900px; margin: auto; }
-  .game-footer { flex-direction: column; gap: 6px; text-align: center; }
-  .pond { aspect-ratio: 1.65; }
+  .page {
+    padding: 12px 10px 14px;
+    background: #172800;
+    min-height: calc(100vh - clamp(52px, 4.3vw, 86px));
+    min-height: calc(100dvh - clamp(52px, 4.3vw, 86px));
+    height: calc(100vh - clamp(52px, 4.3vw, 86px));
+    height: calc(100dvh - clamp(52px, 4.3vw, 86px));
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .split-stage {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-width: 900px;
+    margin: auto;
+    width: 100%;
+  }
+  .game-board {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+  }
+  .pond {
+    flex: 1 1 auto;
+    min-height: 420px;
+    aspect-ratio: auto;
+  }
+  .game-footer {
+    flex: none;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+    margin-top: auto;
+  }
   .start-screen { padding-bottom: 37px; }
   .start-mascot { width: 142px; height: 106px; }
   .start-leaf { width: 142px; height: 91px; bottom: -14px; }
@@ -1166,14 +1211,33 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
   }
 
   .page {
-    padding: 8px 6px 14px;
+    padding: 6px 6px 4px;
+    min-height: calc(100vh - 52px);
+    min-height: calc(100dvh - 52px);
+    height: calc(100vh - 52px);
+    height: calc(100dvh - 52px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .split-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     max-width: 100%;
     margin: 0 auto;
+    width: 100%;
   }
   .game-board {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     border-radius: 10px;
+    height: 100%;
   }
 
   /* HUD */
@@ -1217,9 +1281,11 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
 
   /* POND */
   .pond {
-    aspect-ratio: 0.72;
-    min-height: 480px;
-    max-height: min(680px, calc(100dvh - 126px));
+    flex: 1 1 auto;
+    min-height: 400px;
+    aspect-ratio: auto;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
   }
 
   /* Question box */
@@ -1609,11 +1675,13 @@ dialog .secondary-button { width: 100%; font-size: 16px; }
   }
 
   .game-footer {
-    padding: 8px 4px 4px;
-    font-size: 12px;
+    flex: none;
+    padding: 4px 4px 6px;
+    margin-top: auto;
+    font-size: 11.5px;
   }
   .footer-credit {
-    font-size: 12px;
+    font-size: 11.5px;
   }
 }
 
