@@ -2,7 +2,14 @@
 
 Game kuis matematika untuk kelas IX SMP dengan mode dua tim (dapat dimainkan secara kompetitif dua tim berdampingan maupun secara mandiri pada satu layar). Setiap papan permainan memiliki level, soal, timer, nyawa, skor, jeda, serta hasil sendiri. Kode dan ilustrasi dibuat baru dengan mekanisme katak melompat ke daun jawaban; ini bukan kode atau aset Educaplay, dan tidak berafiliasi dengan Educaplay.
 
-## Cara Menjalankan Game
+## Mainkan Daring (Live Demo)
+
+Game ini dapat langsung dimainkan secara online tanpa instalasi melalui GitHub Pages:
+**[https://aantriono82.github.io/loncatkatak/](https://aantriono82.github.io/loncatkatak/)**
+
+---
+
+## Cara Menjalankan Game Secara Mandiri (Lokal / Offline)
 
 Game ini berbasis web murni (HTML, CSS, JavaScript) sehingga tidak membutuhkan instalasi dependensi rumit, database, API key, atau internet. Anda dapat menjalankannya dengan beberapa pilihan cara berikut:
 
